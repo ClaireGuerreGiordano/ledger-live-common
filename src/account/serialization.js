@@ -14,7 +14,9 @@ import type {
   Operation,
   OperationRaw,
   SubAccount,
-  SubAccountRaw
+  SubAccountRaw,
+  AccountLike,
+  AccountRawLike
 } from "../types";
 import type { TronResources, TronResourcesRaw } from "../families/tron/types";
 import {
@@ -381,6 +383,26 @@ export function toSubAccountRaw(subAccount: SubAccount): SubAccountRaw {
       return toTokenAccountRaw(subAccount);
     default:
       throw new Error("invalid subAccount.type=" + subAccount.type);
+  }
+}
+
+export function fromAccountLikeRaw(
+  rawAccountLike: AccountRawLike
+): AccountLike {
+  if ("type" in rawAccountLike) {
+    //$FlowFixMe
+    return fromSubAccountRaw(rawAccountLike);
+  }
+  //$FlowFixMe
+  return fromAccountRaw(rawAccountLike);
+}
+
+export function toAccountLikeRaw(accountLike: AccountLike): AccountRawLike {
+  switch (accountLike.type) {
+    case "Account":
+      return toAccountRaw(accountLike);
+    default:
+      return toSubAccountRaw(accountLike);
   }
 }
 
